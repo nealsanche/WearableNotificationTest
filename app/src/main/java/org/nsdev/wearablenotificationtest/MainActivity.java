@@ -52,7 +52,7 @@ public class MainActivity extends Activity {
                         .setContentText("When in danger,\nWhen in doubt,\nRun in circles,\nScream and shout!");
 
         // Create an intent for the reply action
-        Intent actionIntent = new Intent(this, MainActivity.class);
+        Intent actionIntent = new Intent(this, LoveItActivity.class);
         PendingIntent actionPendingIntent =
                 PendingIntent.getActivity(this, 0, actionIntent,
                         PendingIntent.FLAG_UPDATE_CURRENT);
@@ -63,28 +63,18 @@ public class MainActivity extends Activity {
                         getString(R.string.ic_love_label), actionPendingIntent)
                         .build();
 
-        NotificationCompat.WearableExtender wearableExtender = new NotificationCompat.WearableExtender();
+        NotificationCompat.WearableExtender wearableExtender = new NotificationCompat.WearableExtender()
+                .setGravity(Gravity.TOP)
+                .addAction(action)
+                .setHintScreenTimeout(NotificationCompat.WearableExtender.SCREEN_TIMEOUT_LONG);
 
-        wearableExtender.setGravity(Gravity.TOP); // Gravity.BOTTOM, Gravity.CENTER_VERTICAL
-        wearableExtender.setHintScreenTimeout(NotificationCompat.WearableExtender.SCREEN_TIMEOUT_LONG); // ms or SCREEN_TIMEOUT_SHORT
-
-        wearableExtender.setContentIconGravity(Gravity.START);
-        wearableExtender.addAction(action);
-
-        wearableExtender.setHintShowBackgroundOnly(true);
-        wearableExtender.addPage(new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .extend(
-                        new NotificationCompat.WearableExtender()
+        wearableExtender.addPage(
+                new NotificationCompat.Builder(this)
+                        .extend(new NotificationCompat.WearableExtender()
                                 .setBackground(BitmapFactory.decodeResource(getResources(), R.drawable.punk))
                                 .setHintAvoidBackgroundClipping(true)
-                                .setHintShowBackgroundOnly(true)
-                ).build());
-
-        wearableExtender.addPage(new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("My notification")
-                .setContentText("Third Page").extend(new NotificationCompat.WearableExtender().setGravity(Gravity.TOP)).build());
+                                .setHintShowBackgroundOnly(true))
+                        .build());
 
         mBuilder.extend(wearableExtender);
 
@@ -92,6 +82,5 @@ public class MainActivity extends Activity {
         NotificationManager mNotifyMgr =
                 (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         mNotifyMgr.notify(mNotificationId, mBuilder.build());
-
     }
 }
